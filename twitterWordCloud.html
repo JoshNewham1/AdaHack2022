@@ -11,6 +11,7 @@
         type="text"
         id="searchWord"
         name="searchWord"
+        pattern="[A-za-z0-9]+"
         placeholder="Tweet Search"
       />
     </form>
@@ -49,6 +50,10 @@
         // display the word cloud chart
         chart.container("container");
         chart.draw();
+      })
+      .catch(() => {
+        document.getElementById("container").innerHTML = "";
+        alert("Could not find any tweets with that search input...");
       });
   }
   document
