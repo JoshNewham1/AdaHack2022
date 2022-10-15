@@ -42,14 +42,25 @@
       .then((response) => response.json())
       .then((data) => {
         document.getElementById("container").innerHTML = "";
-        // create a tag (word) cloud chart
-        var chart = anychart.tagCloud(data?.words);
+        // create a word cloud
+        const wordCloud = anychart.tagCloud(data?.words);
         // set an array of angles at which the words will be laid out
-        chart.angles([0]);
+        wordCloud.angles([0]);
 
-        // display the word cloud chart
-        chart.container("container");
-        chart.draw();
+        // display the word cloud
+        wordCloud.container("container");
+        wordCloud.draw();
+
+        // create a bar chart
+        const barChart = anychart.bar();
+        // Convert JSON object {0: 100, 0.2: 200, ...} to 2D array [[0, 100], [0.2, 200]]
+        const dataArray = Object.keys(data?.sentiments).map((k) => [
+          k,
+          data?.sentiments[k],
+        ]);
+        const series = barChart.bar(dataArray);
+        barChart.container("container");
+        barChart.draw();
       })
       .catch(() => {
         document.getElementById("container").innerHTML = "";
