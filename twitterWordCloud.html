@@ -51,7 +51,7 @@
   function formSubmit(event) {
     event.preventDefault(); // prevent default behaviour of form submitting
     var input = document.getElementById("searchWord").value; // get value from text box
-    fetch("http://localhost:5000/getWordMap?word=" + input)
+    fetch(`http://${window.location.host}/getWordMap?word=${input}`)
       .then((response) => response.json())
       .then((data) => {
         // clear existing word cloud
