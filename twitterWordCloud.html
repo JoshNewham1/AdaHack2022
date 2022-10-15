@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Twitter Word Cloud</title>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+  </head>
+  <body>
+    <form style="padding-top: 40px; padding-left: 20px" id="searchForm">
+      <input
+        type="text"
+        id="searchWord"
+        name="searchWord"
+        placeholder="Tweet Search"
+      />
+    </form>
+    <div id="container"></div>
+  </body>
+</html>
+<style>
+  html,
+  body,
+  #container {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #searchWord {
+    width: 500px;
+    height: 45px;
+    font-size: large;
+  }
+</style>
+
+<script>
+  function formSubmit(event) {
+    event.preventDefault();
+    var input = document.getElementById("searchWord").value;
+    fetch("http://localhost:5000/getWordMap?word=" + input)
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById("container").innerHTML = "";
+        // create a tag (word) cloud chart
+        var chart = anychart.tagCloud(data);
+        // set an array of angles at which the words will be laid out
+        chart.angles([0]);
+
+        // display the word cloud chart
+        chart.container("container");
+        chart.draw();
+      });
+  }
+  document
+    .getElementById("searchForm")
+    .addEventListener("submit", formSubmit, false);
+</script>
