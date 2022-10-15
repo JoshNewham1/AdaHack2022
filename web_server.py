@@ -74,7 +74,5 @@ def getWordMap():
     response.headers.add("Access-Control-Allow-Origin", "*") # Enable CORS so the front-end canc be hosted elsewhere and still can access
     return response
 
-    # TODO: Send sentiment scores to the client and create a bar chart
-
 if __name__ == '__main__':
    app.run()
