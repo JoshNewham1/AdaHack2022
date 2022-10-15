@@ -35,12 +35,26 @@
 </style>
 
 <script>
+  function generateBarColours() {
+    const x = this.x;
+    if (parseFloat(x) < 0) {
+      // Red if x is less than 0
+      return "#BD3637";
+    } else if (parseFloat(x) > 0) {
+      // Green if x is greater than 0
+      return "#36BD79";
+    } else {
+      // Black if x is 0
+      return "#000000";
+    }
+  }
   function formSubmit(event) {
-    event.preventDefault();
-    var input = document.getElementById("searchWord").value;
+    event.preventDefault(); // prevent default behaviour of form submitting
+    var input = document.getElementById("searchWord").value; // get value from text box
     fetch("http://localhost:5000/getWordMap?word=" + input)
       .then((response) => response.json())
       .then((data) => {
+        // clear existing word cloud
         document.getElementById("container").innerHTML = "";
         // create a word cloud
         const wordCloud = anychart.tagCloud(data?.words);
@@ -53,16 +67,28 @@
 
         // create a bar chart
         const barChart = anychart.bar();
-        // Convert JSON object {0: 100, 0.2: 200, ...} to 2D array [[0, 100], [0.2, 200]]
+
+        // convert JSON object {0: 100, 0.2: 200, ...} to 2D array [[0, 100], [0.2, 200]]
         const dataArray = Object.keys(data?.sentiments).map((k) => [
           k,
           data?.sentiments[k],
         ]);
-        const series = barChart.bar(dataArray);
+
+        // add data and axes to bar chart
+        const barSeries = barChart.bar(dataArray);
+        barSeries.fill(generateBarColours);
+        barSeries.labels(true);
+        barSeries.name("Number of Tweets");
         barChart.container("container");
+
+        const title = barChart.title();
+        title.enabled(true);
+        title.text("Number of Tweets by Sentiment");
+
         barChart.draw();
       })
       .catch(() => {
+        // clear charts and display error if request failed
         document.getElementById("container").innerHTML = "";
         alert("Could not find any tweets with that search input...");
       });
