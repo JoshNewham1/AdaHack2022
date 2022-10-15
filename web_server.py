@@ -24,7 +24,7 @@ client = tweepy.Client(twitter_bearer_token)
 
 @app.route('/getWordMap')
 def getWordMap():
-    sentiments = []
+    sentiments = {}
     words = {}
 
     def search_twitter(search_query):
@@ -49,8 +49,16 @@ def getWordMap():
             elif word != "":
                 words[word] += 1
 
+    def round_nearest(x, a):
+        return round(round(x / a) * a, 1)
+    
     def get_sentiment(tweet):
-        sentiments.append(str(TextBlob(tweet.text).sentiment.polarity))
+        sentiment = TextBlob(tweet.text).sentiment.polarity
+        nearest_category = round_nearest(sentiment, 0.2)
+        if nearest_category not in sentiments:
+            sentiments[nearest_category] = 1
+        else:
+            sentiments[nearest_category] += 1
     
     search_term = request.args.get("word")
   
@@ -62,7 +70,7 @@ def getWordMap():
     # Sort dictionary of words by number of mentions, where the number of mentions is greater than 10
     sorted_dict = [{"x": t, "value": words[t]} for t in dict(sorted(words.items(), key=lambda item: item[1], reverse=True)) if words[t] > 10]
 
-    response = jsonify(sorted_dict)
+    response = jsonify({"words": sorted_dict, "sentiments": sentiments})
     response.headers.add("Access-Control-Allow-Origin", "*") # Enable CORS so the front-end canc be hosted elsewhere and still can access
     return response
 

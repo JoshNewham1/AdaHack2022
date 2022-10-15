@@ -43,7 +43,7 @@
       .then((data) => {
         document.getElementById("container").innerHTML = "";
         // create a tag (word) cloud chart
-        var chart = anychart.tagCloud(data);
+        var chart = anychart.tagCloud(data?.words);
         // set an array of angles at which the words will be laid out
         chart.angles([0]);
 
