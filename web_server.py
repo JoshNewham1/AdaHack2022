@@ -28,7 +28,10 @@ def getWordMap():
     words = {}
 
     def search_twitter(search_query):
-        paginator = tweepy.Paginator(client.search_recent_tweets, query=search_query, max_results=100, limit=5)
+        paginator = tweepy.Paginator(client.search_recent_tweets,
+                                     query=search_query, 
+                                     max_results=100, 
+                                     limit=5)
         for tweet in paginator.flatten(limit=500):
             build_dictionary(tweet)
             get_sentiment(tweet)
